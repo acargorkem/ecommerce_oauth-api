@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/acargorkem/ecommerce_oauth-api/src/clients/cassandra"
 	"github.com/acargorkem/ecommerce_oauth-api/src/domain/access_token"
 	"github.com/acargorkem/ecommerce_oauth-api/src/http"
 	"github.com/acargorkem/ecommerce_oauth-api/src/repository/db"
@@ -12,6 +13,12 @@ var (
 )
 
 func StartApp() {
+	session, dbErr := cassandra.GetSession()
+	if dbErr != nil {
+		panic(dbErr)
+	}
+	session.Close()
+
 	dbRepository := db.NewRepository()
 	atService := access_token.NewService(dbRepository)
 	atHandler := http.NewHandler(atService)
