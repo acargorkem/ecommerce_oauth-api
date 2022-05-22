@@ -8,8 +8,37 @@ import (
 )
 
 const (
-	expirationTime = 24
+	expirationTime             = 24
+	grantTypePassword          = "password"
+	grandTypeClientCredentials = "client_credentials"
 )
+
+type AccessTokenRequest struct {
+	GrantType string `json:"grant_type"`
+
+	// Used for password grant_type
+	Username string `json:"username"`
+	Password string `json:"password"`
+
+	// Used for client credentials grant_type
+	ClientId     string `json:"client_id"`
+	ClientSecret string `json:"client_secret"`
+
+	Scope string `json:"scope"`
+}
+
+func (request *AccessTokenRequest) Validate() *errors.RestErr {
+	switch request.GrantType {
+	case grantTypePassword:
+		break
+	case grandTypeClientCredentials:
+	default:
+		return errors.NewBadRequestError("invalid grant_type parameter")
+	}
+
+	// TODO: Validate parameters for each grant_type
+	return nil
+}
 
 type AccessToken struct {
 	AccessToken string `json:"access_token"`
@@ -39,8 +68,9 @@ func getExpirationTimestamp(expiredIn time.Duration) int64 {
 	return time.Now().UTC().Add(expiredIn * time.Hour).Unix()
 }
 
-func GetNewAccessToken() AccessToken {
+func GetNewAccessToken(userId int64) AccessToken {
 	return AccessToken{
+		UserId:  userId,
 		Expires: getExpirationTimestamp(expirationTime),
 	}
 }
@@ -49,4 +79,9 @@ func (at AccessToken) IsExpired() bool {
 	now := time.Now().UTC()
 	expirationTime := time.Unix(at.Expires, 0)
 	return expirationTime.Before(now)
+}
+
+func (at *AccessToken) Generate() {
+	//TODO: Implement real access token
+	at.AccessToken = "test"
 }

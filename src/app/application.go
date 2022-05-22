@@ -1,9 +1,10 @@
 package app
 
 import (
-	"github.com/acargorkem/ecommerce_oauth-api/src/domain/access_token"
 	"github.com/acargorkem/ecommerce_oauth-api/src/http"
 	"github.com/acargorkem/ecommerce_oauth-api/src/repository/db"
+	"github.com/acargorkem/ecommerce_oauth-api/src/repository/rest"
+	"github.com/acargorkem/ecommerce_oauth-api/src/services/access_token"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,8 +13,9 @@ var (
 )
 
 func StartApp() {
+	usersRepository := rest.NewRepository()
 	dbRepository := db.NewRepository()
-	atService := access_token.NewService(dbRepository)
+	atService := access_token.NewService(usersRepository, dbRepository)
 	atHandler := http.NewHandler(atService)
 
 	router.GET("/oauth/access_token/:access_token_id", atHandler.GetById)
