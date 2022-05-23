@@ -6,7 +6,7 @@ import (
 
 	atdomain "github.com/acargorkem/ecommerce_oauth-api/src/domain/access_token"
 	"github.com/acargorkem/ecommerce_oauth-api/src/services/access_token"
-	"github.com/acargorkem/ecommerce_oauth-api/src/utils/errors"
+	"github.com/acargorkem/ecommerce_utils-go/rest_errors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,7 +38,7 @@ func (handler *accessTokenHandler) GetById(c *gin.Context) {
 func (handler *accessTokenHandler) Create(c *gin.Context) {
 	var request atdomain.AccessTokenRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
-		restErr := errors.NewBadRequestError("invalid json body")
+		restErr := rest_errors.NewBadRequestError("invalid json body")
 		c.JSON(restErr.Status, restErr)
 		return
 	}

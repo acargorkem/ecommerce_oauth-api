@@ -3,14 +3,13 @@ module github.com/acargorkem/ecommerce_oauth-api
 go 1.18
 
 require (
+	github.com/acargorkem/ecommerce_utils-go v0.0.0-20220523100220-5ca8acad19e5
 	github.com/gin-gonic/gin v1.7.7
+	github.com/jarcoal/httpmock v1.2.0
 	github.com/stretchr/testify v1.7.1
 )
 
-require (
-	github.com/jarcoal/httpmock v1.2.0 // indirect
-	golang.org/x/net v0.0.0-20211029224645-99673261e6eb // indirect
-)
+require golang.org/x/net v0.0.0-20211029224645-99673261e6eb // indirect
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect

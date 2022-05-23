@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/acargorkem/ecommerce_oauth-api/src/domain/users"
-	"github.com/acargorkem/ecommerce_oauth-api/src/utils/errors"
+	"github.com/acargorkem/ecommerce_utils-go/rest_errors"
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/assert"
 )
@@ -24,7 +24,7 @@ func TestLoginUserNotFound(t *testing.T) {
 	repository := usersRepository{}
 	errorMessage := "user not found"
 
-	responseBody := errors.NewNotFoundError(errorMessage)
+	responseBody := rest_errors.NewNotFoundError(errorMessage)
 	responder := httpmock.NewJsonResponderOrPanic(404, responseBody)
 	fakeUrl := baseUrl + "/users/login"
 	httpmock.RegisterResponder("POST", fakeUrl, responder)
@@ -45,7 +45,7 @@ func TestLoginUserInvalidCredentials(t *testing.T) {
 	repository := usersRepository{}
 	errorMessage := "invalid credentials"
 
-	responseBody := errors.NewUnauthorizedError(errorMessage)
+	responseBody := rest_errors.NewUnauthorizedError(errorMessage)
 	responder := httpmock.NewJsonResponderOrPanic(401, responseBody)
 	fakeUrl := baseUrl + "/users/login"
 	httpmock.RegisterResponder("POST", fakeUrl, responder)

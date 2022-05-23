@@ -4,7 +4,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/acargorkem/ecommerce_oauth-api/src/utils/errors"
+	"github.com/acargorkem/ecommerce_utils-go/rest_errors"
 )
 
 const (
@@ -27,13 +27,13 @@ type AccessTokenRequest struct {
 	Scope string `json:"scope"`
 }
 
-func (request *AccessTokenRequest) Validate() *errors.RestErr {
+func (request *AccessTokenRequest) Validate() *rest_errors.RestErr {
 	switch request.GrantType {
 	case grantTypePassword:
 		break
 	case grandTypeClientCredentials:
 	default:
-		return errors.NewBadRequestError("invalid grant_type parameter")
+		return rest_errors.NewBadRequestError("invalid grant_type parameter")
 	}
 
 	// TODO: Validate parameters for each grant_type
@@ -47,19 +47,19 @@ type AccessToken struct {
 	Expires     int64  `json:"expires"`
 }
 
-func (at *AccessToken) Validate() *errors.RestErr {
+func (at *AccessToken) Validate() *rest_errors.RestErr {
 	at.AccessToken = strings.TrimSpace(at.AccessToken)
 	if at.AccessToken == "" {
-		return errors.NewBadRequestError("invalid access token id")
+		return rest_errors.NewBadRequestError("invalid access token id")
 	}
 	if at.UserId <= 0 {
-		return errors.NewBadRequestError("invalid user id")
+		return rest_errors.NewBadRequestError("invalid user id")
 	}
 	if at.ClientId <= 0 {
-		return errors.NewBadRequestError("invalid client id")
+		return rest_errors.NewBadRequestError("invalid client id")
 	}
 	if at.Expires <= 0 {
-		return errors.NewBadRequestError("invalid expiration time")
+		return rest_errors.NewBadRequestError("invalid expiration time")
 	}
 	return nil
 }
