@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	baseUrl = "http://fake-users-api-url:8080"
+	baseUrl = "http://localhost:8081"
 )
 
 var (
