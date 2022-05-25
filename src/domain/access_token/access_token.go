@@ -4,6 +4,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/acargorkem/ecommerce_oauth-api/src/utils/config"
 	"github.com/acargorkem/ecommerce_utils-go/rest_errors"
 )
 
@@ -11,6 +12,10 @@ const (
 	expirationTime             = 24
 	grantTypePassword          = "password"
 	grandTypeClientCredentials = "client_credentials"
+)
+
+var (
+	jwtSecretKey = config.JWT_SECRET_KEY
 )
 
 type AccessTokenRequest struct {
@@ -44,7 +49,7 @@ type AccessToken struct {
 	AccessToken string `json:"access_token"`
 	UserId      int64  `json:"user_id"`
 	ClientId    int64  `json:"client_id"`
-	Expires     int64  `json:"expires"`
+	ExpiredAt   int64  `json:"expired_at"`
 }
 
 func (at *AccessToken) Validate() *rest_errors.RestErr {
@@ -58,7 +63,7 @@ func (at *AccessToken) Validate() *rest_errors.RestErr {
 	if at.ClientId <= 0 {
 		return rest_errors.NewBadRequestError("invalid client id")
 	}
-	if at.Expires <= 0 {
+	if at.ExpiredAt <= 0 {
 		return rest_errors.NewBadRequestError("invalid expiration time")
 	}
 	return nil
@@ -70,18 +75,28 @@ func getExpirationTimestamp(expiredIn time.Duration) int64 {
 
 func GetNewAccessToken(userId int64) AccessToken {
 	return AccessToken{
-		UserId:  userId,
-		Expires: getExpirationTimestamp(expirationTime),
+		UserId:    userId,
+		ExpiredAt: getExpirationTimestamp(expirationTime),
 	}
 }
 
 func (at AccessToken) IsExpired() bool {
 	now := time.Now().UTC()
-	expirationTime := time.Unix(at.Expires, 0)
+	expirationTime := time.Unix(at.ExpiredAt, 0)
 	return expirationTime.Before(now)
 }
 
-func (at *AccessToken) Generate() {
-	//TODO: Implement real access token
-	at.AccessToken = "test"
+func (at *AccessToken) Generate() *rest_errors.RestErr {
+	maker, err := NewJWTMaker(jwtSecretKey)
+	if err != nil {
+		return rest_errors.NewInternalServerError("sorry can't create access token", rest_errors.NewError("An error during creating jwt maker"))
+	}
+
+	token, err := maker.CreateToken(at.UserId, at.ExpiredAt)
+	if err != nil {
+		return rest_errors.NewInternalServerError("sorry can't create access token", rest_errors.NewError("An error during create token"))
+	}
+
+	at.AccessToken = token
+	return nil
 }

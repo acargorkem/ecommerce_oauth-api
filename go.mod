@@ -5,6 +5,8 @@ go 1.18
 require (
 	github.com/acargorkem/ecommerce_utils-go v0.0.0-20220523100220-5ca8acad19e5
 	github.com/gin-gonic/gin v1.7.7
+	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/google/uuid v1.3.0
 	github.com/jarcoal/httpmock v1.2.0
 	github.com/stretchr/testify v1.7.1
 )
@@ -22,6 +24,7 @@ require (
 	github.com/golang/protobuf v1.3.3 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/hailocab/go-hostpool v0.0.0-20160125115350-e80d13ce29ed // indirect
+	github.com/joho/godotenv v1.4.0
 	github.com/json-iterator/go v1.1.9 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect

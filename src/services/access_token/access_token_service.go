@@ -51,7 +51,10 @@ func (s *service) Create(request access_token.AccessTokenRequest) (*access_token
 	}
 
 	at := access_token.GetNewAccessToken(user.Id)
-	at.Generate()
+	tokenErr := at.Generate()
+	if tokenErr != nil {
+		return nil, tokenErr
+	}
 
 	if err := s.dbRepo.Create(at); err != nil {
 		return nil, err
