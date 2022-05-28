@@ -1,6 +1,7 @@
 package cassandra
 
 import (
+	"github.com/acargorkem/ecommerce_oauth-api/src/utils/config"
 	"github.com/gocql/gocql"
 )
 
@@ -9,7 +10,7 @@ var (
 )
 
 func init() {
-	cluster := gocql.NewCluster("127.0.0.1")
+	cluster := gocql.NewCluster(config.CASSANDRA_URL)
 	cluster.Keyspace = ""
 	cluster.Consistency = gocql.Quorum
 

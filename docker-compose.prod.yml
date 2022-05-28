@@ -11,7 +11,7 @@ services:
       - "HEAP_NEWSIZE=128M"
     restart: unless-stopped
     networks:
-      - backend
+      - oauth-api
     volumes:
       - ${PWD}/out/cassandra_data:/var/lib/cassandra
     healthcheck:
@@ -33,12 +33,25 @@ services:
     depends_on:
       - cassandra
     networks:
-      - backend
+      - oauth-api
     volumes:
       - ${PWD}/scripts/cassandra_schema.cql:/schema.cql
     command: /bin/bash -c "sleep 60 && echo [ecommerce_oauth]Loading cassandra keyspace... && cqlsh cassandra -f /schema.cql"
 
+  oauth-api-app:
+    image: 128292706517.dkr.ecr.eu-central-1.amazonaws.com/ecommerce_oauth:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - CASSANDRA_URL=cassandra
+    depends_on:
+      - cassandra-load-keyspace
+    networks:
+      - oauth-api   
+    entrypoint: ["/app/wait-for.sh","cassandra:9042", "--", "/app/start.sh"]
+    command: ["/app/main"]
 
 networks:
-  backend:
+  oauth-api:
     driver: bridge
